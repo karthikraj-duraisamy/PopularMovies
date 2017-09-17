@@ -1,6 +1,7 @@
 package com.example.popularmovies;
 
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 
 import java.io.IOException;
@@ -15,8 +16,8 @@ import java.util.Scanner;
  */
 
 public class NetworkUtils {
-    private static final String MOVIE_DB_BASE_URL = "http://api.themoviedb.org/3/movie/";
-    private static final String API_KEY = "YOUR_API_KEY_GOES_HERE";
+    private static final String MOVIE_DB_BASE_URL = BuildConfig.BASE_URL;
+    private static final String API_KEY = BuildConfig.API_KEY;
     private static final String API_KEY_PARAM = "api_key";
 
     private static final String TAG = NetworkUtils.class.getSimpleName();
