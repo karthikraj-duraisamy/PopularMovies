@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.example.popularmovies.MovieDetailActivity"
+    tools:showIn="@layout/activity_movie_detail">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv_moview_thumbnail"
+            android:layout_width="185dp"
+            android:layout_height="200dp"
+            android:paddingTop="16dp"
+            android:contentDescription="@string/movie_poster_image"
+            tools:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/tv_release_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_toEndOf="@+id/iv_moview_thumbnail"
+            android:layout_toRightOf="@+id/iv_moview_thumbnail"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            tools:text="2017" />
+
+        <TextView
+            android:id="@+id/tv_user_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/tv_release_date"
+            android:layout_alignStart="@+id/tv_release_date"
+            android:layout_below="@+id/tv_release_date"
+            android:layout_marginTop="16dp"
+            tools:text="8.8 / 10" />
+
+        <TextView
+            android:id="@+id/tv_movie_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/iv_moview_thumbnail"
+            android:layout_marginTop="16dp"
+            android:padding="16dp"
+            tools:text="you still should and need to check for http timeout exceptions since there might be situations when a network is connected but there would no actual internet connection because the only way to access it is through, for instance, VPN - this way u have, for instance, WI-FI connection but no actual internet traffic. Another situation is a server hang-on. These are 2 issues that I've run recently and connection manager isn't gonna help there" />
+    </RelativeLayout>
+</android.support.v4.widget.NestedScrollView>
