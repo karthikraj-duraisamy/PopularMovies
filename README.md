@@ -13,11 +13,11 @@ And then following the step in this page https://www.themoviedb.org/faq/api unde
 
 ## Screenshots
 
-<img width="45%" src="screenshots/screen1.png" />
+<img width="45%" src="Screenshots/screen1.png" />
 
-<img width="45%" src="screenshots/screen2.png" />
+<img width="45%" src="Screenshots/screen2.png" />
 
-<img width="45%" src="screenshots/screen3.png" />
+<img width="45%" src="Screenshots/screen3.png" />
 
 
 
