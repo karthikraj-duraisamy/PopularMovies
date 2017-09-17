@@ -78,6 +78,7 @@ public class MovieListActivity extends AppCompatActivity implements MoviesGridAd
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
         int noOfColumns = (int) (dpWidth / 180);
+        noOfColumns = noOfColumns > 2 ? noOfColumns : 2;
         return noOfColumns;
     }
 
