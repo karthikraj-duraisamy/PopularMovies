@@ -1,9 +1,12 @@
+<<<<<<< HEAD
 
 # Created by https://www.gitignore.io/api/macos,androidstudio
 
 ### AndroidStudio ###
 # Covers files to be ignored for android development using Android Studio.
 
+=======
+>>>>>>> 71a3b329ff96a077ad6f1fb8e1af2dd126021c76
 # Built application files
 *.apk
 *.ap_
@@ -20,6 +23,7 @@ gen/
 out/
 
 # Gradle files
+<<<<<<< HEAD
 .gradle
 .gradle/
 build/
@@ -27,6 +31,10 @@ gradle.properties
 
 # Signing files
 .signing/
+=======
+.gradle/
+build/
+>>>>>>> 71a3b329ff96a077ad6f1fb8e1af2dd126021c76
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -37,6 +45,7 @@ proguard/
 # Log Files
 *.log
 
+<<<<<<< HEAD
 # Android Studio
 /*/build/
 /*/local.properties
@@ -65,10 +74,26 @@ obj/
 
 # User-specific configurations
 .idea
+=======
+# Android Studio Navigation editor temp files
+.navigation/
+
+# Android Studio captures folder
+captures/
+
+# Intellij
+*.iml
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/gradle.xml
+.idea/dictionaries
+.idea/libraries
+>>>>>>> 71a3b329ff96a077ad6f1fb8e1af2dd126021c76
 
 # Keystore files
 *.jks
 
+<<<<<<< HEAD
 # OS-specific files
 .DS_Store
 .DS_Store?
@@ -141,3 +166,15 @@ Temporary Items
 .apdisk
 
 # End of https://www.gitignore.io/api/macos,androidstudio
+=======
+# External native build folder generated in Android Studio 2.2 and later
+.externalNativeBuild
+
+# Google Services (e.g. APIs or Firebase)
+google-services.json
+
+# Freeline
+freeline.py
+freeline/
+freeline_project_description.json
+>>>>>>> 71a3b329ff96a077ad6f1fb8e1af2dd126021c76
