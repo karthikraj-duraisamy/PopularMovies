@@ -28,6 +28,7 @@ out/
 .gradle/
 build/
 gradle.properties
+secrets.properties
 
 # Signing files
 .signing/
