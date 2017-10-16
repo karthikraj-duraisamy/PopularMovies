@@ -1,7 +1,6 @@
 package com.example.popularmovies;
 
 import android.net.Uri;
-import android.os.Build;
 import android.util.Log;
 
 import java.io.IOException;
@@ -40,16 +39,6 @@ public class NetworkUtils {
         return url;
     }
 
-
-    public static InputStream getResponseFromHttpUrl(URL url) throws IOException {
-        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-        try {
-            InputStream in = urlConnection.getInputStream();
-            return in;
-        } finally {
-            urlConnection.disconnect();
-        }
-    }
 
     public static String getResponseStringFromHttpUrl(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
