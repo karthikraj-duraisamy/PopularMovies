@@ -14,11 +14,15 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindString;
+
 /**
  * Created by karthik on 2/7/17.
  */
 
 public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.MovieViewHolder>{
+
+    @BindString(R.string.poster_uri) String posterURIString;
 
     private MovieAdapterListener listener;
     private Context mContext;
@@ -51,7 +55,7 @@ public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.Mo
     @Override
     public void onBindViewHolder(MovieViewHolder holder, int position) {
         Movie movie = movieArrayList.get(position);
-        String posterURI = mContext.getString(R.string.poster_uri) + movie.getPoster_path();
+        String posterURI = posterURIString + movie.getPoster_path();
         Uri imageUri = Uri.parse(posterURI);
         Picasso.with(mContext).load(imageUri).into(holder.moviePosterImage);
     }

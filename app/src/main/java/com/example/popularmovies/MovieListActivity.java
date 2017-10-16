@@ -37,27 +37,28 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import butterknife.BindString;
+import butterknife.BindView;
+
 public class MovieListActivity extends AppCompatActivity implements MoviesGridAdapter.MovieAdapterListener, LoaderManager.LoaderCallbacks<List<Movie>> {
 
-    private RecyclerView mRecyclerView;
     private MoviesGridAdapter mAdapter;
-    private GridLayoutManager layoutManager;
-
-    private LinearLayout errorViewLayout;
-    private ProgressBar progressBar;
-
     private List<Movie> movieArrayList;
     private String SORT_BY = "";
+
+    @BindView(R.id.recyclerview_moviewlist) RecyclerView mRecyclerView;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.layout_error_message) LinearLayout errorViewLayout;
+    @BindView(R.id.pb_loading_indicator) ProgressBar progressBar;
+
+    @BindString(R.string.something_went_wrong) String somethingWentWrongMessage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_list);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         movieArrayList = new ArrayList<>();
-
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_moviewlist);
         mAdapter = new MoviesGridAdapter(this, this);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mAdapter);
@@ -66,17 +67,10 @@ public class MovieListActivity extends AppCompatActivity implements MoviesGridAd
         By default we set to pull popular movies
         */
         SORT_BY = "popular";
-
         int mNoOfColumns = calculateNoOfColumns(getApplicationContext());
-
-        layoutManager = new GridLayoutManager(this, mNoOfColumns, GridLayoutManager.VERTICAL, false);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, mNoOfColumns, GridLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
-
-        errorViewLayout = (LinearLayout) findViewById(R.id.layout_error_message);
-        progressBar = (ProgressBar) findViewById(R.id.pb_loading_indicator);
-
         loadMovieData();
-
     }
 
     private int calculateNoOfColumns(Context context) {
@@ -91,7 +85,6 @@ public class MovieListActivity extends AppCompatActivity implements MoviesGridAd
     private boolean internetConnection() {
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
@@ -138,7 +131,6 @@ public class MovieListActivity extends AppCompatActivity implements MoviesGridAd
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_sort_by_popular) {
             SORT_BY = "popular";
@@ -164,8 +156,6 @@ public class MovieListActivity extends AppCompatActivity implements MoviesGridAd
         startActivity(detailViewIntent);
     }
 
-
-
     //AsyncLoader Callbacks
     @Override
     public Loader onCreateLoader(int id, Bundle args) {
@@ -179,6 +169,7 @@ public class MovieListActivity extends AppCompatActivity implements MoviesGridAd
 
     @Override
     public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> data) {
+
         progressBar.setVisibility(View.INVISIBLE);
 
         if(data == null)
@@ -189,7 +180,7 @@ public class MovieListActivity extends AppCompatActivity implements MoviesGridAd
             mAdapter.updateMovieDataSet(movieArrayList);
             showMovieListView();
         } else {
-            Snackbar.make(mRecyclerView, R.string.something_went_wrong, Snackbar.LENGTH_LONG).show();
+            Snackbar.make(mRecyclerView, somethingWentWrongMessage, Snackbar.LENGTH_LONG).show();
             showErrorView();
         }
     }

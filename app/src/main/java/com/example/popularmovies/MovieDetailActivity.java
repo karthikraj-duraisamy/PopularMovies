@@ -12,12 +12,21 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import butterknife.BindString;
+import butterknife.BindView;
+
 public class MovieDetailActivity extends AppCompatActivity {
 
-    public static final String MOVIE_DATA = "movie_data";
-    private ImageView ivMoviewThumbnail;
-    private TextView tvReleaseDate, tvUserRating, tvMovieDescription;
+    @BindView(R.id.iv_moview_thumbnail) ImageView iVMovieThumbnail;
+    @BindView(R.id.tv_release_date) TextView tvReleaseDate;
+    @BindView(R.id.tv_user_rating) TextView tvUserRating;
+    @BindView(R.id.tv_movie_description) TextView tvMovieDescription;
+    @BindView(R.id.toolbar) Toolbar toolbar;
 
+    @BindString(R.string.user_rating_average_postfix) String userRatingAvgPrefix;
+    @BindString(R.string.poster_uri) String posterURIString;
+
+    public static final String MOVIE_DATA = "movie_data";
     private ActionBar actionBar;
     private Context mContext;
     @Override
@@ -26,16 +35,10 @@ public class MovieDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie_detail);
         mContext = this;
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("");
-
-        ivMoviewThumbnail = (ImageView) findViewById(R.id.iv_moview_thumbnail);
-        tvReleaseDate = (TextView) findViewById(R.id.tv_release_date);
-        tvUserRating = (TextView) findViewById(R.id.tv_user_rating);
-        tvMovieDescription = (TextView) findViewById(R.id.tv_movie_description);
 
         Intent activityintent = getIntent();
         if(activityintent.hasExtra(MOVIE_DATA)) {
@@ -52,12 +55,12 @@ public class MovieDetailActivity extends AppCompatActivity {
     private void updateUI(Movie movie) {
 
         setTitle(movie.getOriginal_title());
-        String posterURI = getString(R.string.poster_uri) + movie.getPoster_path();
+        String posterURI = posterURIString + movie.getPoster_path();
         Uri imageUri = Uri.parse(posterURI);
-        Picasso.with(mContext).load(imageUri).into(ivMoviewThumbnail);
+        Picasso.with(mContext).load(imageUri).into(iVMovieThumbnail);
 
         tvReleaseDate.setText(movie.getRelease_date());
-        String userRating = String.valueOf(movie.getVote_average()) + getString(R.string.user_rating_average_postfix);
+        String userRating = String.valueOf(movie.getVote_average()) + userRatingAvgPrefix;
         tvUserRating.setText(userRating);
         tvMovieDescription.setText(movie.getOverview());
     }
