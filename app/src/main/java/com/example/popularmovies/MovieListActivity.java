@@ -12,6 +12,8 @@ import android.preference.PreferenceManager;
 import android.support.annotation.BoolRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,15 +26,18 @@ import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import com.example.popularmovies.movieslist.MoviesListLoader;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class MovieListActivity extends AppCompatActivity implements MoviesGridAdapter.MovieAdapterListener {
+public class MovieListActivity extends AppCompatActivity implements MoviesGridAdapter.MovieAdapterListener, LoaderManager.LoaderCallbacks<List<Movie>> {
 
     private RecyclerView mRecyclerView;
     private MoviesGridAdapter mAdapter;
@@ -113,10 +118,8 @@ public class MovieListActivity extends AppCompatActivity implements MoviesGridAd
                 movieArrayList = new ArrayList<>();
             else
                 movieArrayList.clear();
-
             mAdapter.updateMovieDataSet(movieArrayList);
-
-            new FetchMoviesTask().execute(SORT_BY);
+            getSupportLoaderManager().initLoader(0, null, this).forceLoad();
         } else {
             showErrorView();
         }
@@ -162,73 +165,32 @@ public class MovieListActivity extends AppCompatActivity implements MoviesGridAd
     }
 
 
-    class FetchMoviesTask extends AsyncTask<String, Void, Boolean> {
 
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressBar.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected Boolean doInBackground(String[] params) {
-
-             /* If there's no zip code, there's nothing to look up. */
-            if (params.length == 0) {
-                return null;
-            }
-
-            String sortBy = params[0];
-            URL requestUrl = NetworkUtils.buildUrl(sortBy);
-
-            try {
-                String jsonResponse = NetworkUtils
-                        .getResponseStringFromHttpUrl(requestUrl);
-
-                JSONObject reader = new JSONObject(jsonResponse);
-
-                JSONArray jsonArray  = reader.getJSONArray("results");
-
-                for(int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonObject =  jsonArray.getJSONObject(i);
-                    Double vote_average = jsonObject.getDouble("vote_average");
-                    String posterPath = jsonObject.getString("poster_path");
-                    String originalTitle = jsonObject.getString("original_title");
-                    String releaseDate = jsonObject.getString("release_date");
-                    String overview = jsonObject.getString("overview");
-                    Movie movie = new Movie();
-                    movie.setVote_average(vote_average);
-                    movie.setPoster_path(posterPath);
-                    movie.setRelease_date(releaseDate);
-                    movie.setOriginal_title(originalTitle);
-                    movie.setOverview(overview);
-                    Log.v("MOVIE_PARSE", movie.getVote_average() +" "+ movie.getPoster_path() +" "+ movie.getOriginal_title() +" "+ movie.getOverview());
-
-                    movieArrayList.add(movie);
-                }
-
-                return true;
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Boolean status) {
-            progressBar.setVisibility(View.INVISIBLE);
-
-            if (status) {
-                mAdapter.updateMovieDataSet(movieArrayList);
-                showMovieListView();
-            } else {
-                Snackbar.make(mRecyclerView, R.string.something_went_wrong, Snackbar.LENGTH_LONG).show();
-                showErrorView();
-            }
-            super.onPostExecute(status);
-        }
+    //AsyncLoader Callbacks
+    @Override
+    public Loader onCreateLoader(int id, Bundle args) {
+        return new MoviesListLoader(MovieListActivity.this, SORT_BY);
     }
 
+    @Override
+    public void onLoaderReset(Loader<List<Movie>> loader) {
+
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> data) {
+        progressBar.setVisibility(View.INVISIBLE);
+
+        if(data == null)
+            return;
+
+        movieArrayList = data;
+        if (data.size() > 0) {
+            mAdapter.updateMovieDataSet(movieArrayList);
+            showMovieListView();
+        } else {
+            Snackbar.make(mRecyclerView, R.string.something_went_wrong, Snackbar.LENGTH_LONG).show();
+            showErrorView();
+        }
+    }
 }
