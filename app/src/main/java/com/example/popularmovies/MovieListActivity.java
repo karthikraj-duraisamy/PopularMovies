@@ -2,11 +2,13 @@ package com.example.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -18,7 +20,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import com.example.popularmovies.data.FavMoviesContract;
 import com.example.popularmovies.movieslist.MoviesListLoader;
 
 import java.util.ArrayList;
@@ -31,12 +35,18 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MovieListActivity extends AppCompatActivity implements MoviesGridAdapter.MovieAdapterListener, LoaderManager.LoaderCallbacks<List<Movie>> {
+public class MovieListActivity extends AppCompatActivity implements MoviesGridAdapter.MovieAdapterListener, LoaderManager.LoaderCallbacks {
 
     private MoviesGridAdapter mAdapter;
     private List<Movie> movieArrayList;
     private String SORT_BY = "";
 
+    private static final int CURSOR_LOADER = 1;
+    private static final int MOVIE_LOADER = 0;
+
+
+    @BindView(R.id.tv_error_message_display)
+    TextView errorMessageTextView;
     @BindView(R.id.recyclerview_moviewlist) RecyclerView mRecyclerView;
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.layout_error_message) LinearLayout errorViewLayout;
@@ -100,7 +110,11 @@ public class MovieListActivity extends AppCompatActivity implements MoviesGridAd
             else
                 movieArrayList.clear();
             mAdapter.updateMovieDataSet(movieArrayList);
-            getSupportLoaderManager().initLoader(0, null, this).forceLoad();
+            if(SORT_BY.equals("Favourites")) {
+                getSupportLoaderManager().initLoader(CURSOR_LOADER, null, this).forceLoad();
+            } else {
+                getSupportLoaderManager().initLoader(MOVIE_LOADER, null, this).forceLoad();
+            }
         } else {
             showErrorView();
         }
@@ -128,6 +142,10 @@ public class MovieListActivity extends AppCompatActivity implements MoviesGridAd
             SORT_BY = "top_rated";
             loadMovieData();
             return true;
+        } else if (id == R.id.action_sort_by_favourites) {
+            SORT_BY = "Favourites";
+            loadMovieData();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -147,32 +165,63 @@ public class MovieListActivity extends AppCompatActivity implements MoviesGridAd
     //AsyncLoader Callbacks
     @Override
     public Loader onCreateLoader(int id, Bundle args) {
-        return new MoviesListLoader(MovieListActivity.this, SORT_BY);
+        if(id == CURSOR_LOADER) {
+            return new CursorLoader(MovieListActivity.this,
+                    FavMoviesContract.FavMoviesEntry.CONTENT_URI,
+                    null,
+                    null,
+                    null,
+                    null);
+        } else {
+            return new MoviesListLoader(MovieListActivity.this, SORT_BY);
+        }
     }
 
     @Override
-    public void onLoaderReset(Loader<List<Movie>> loader) {
+    public void onLoaderReset(Loader loader) {
 
     }
 
     @Override
-    public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> data) {
+    public void onLoadFinished(Loader loader, Object data) {
 
         progressBar.setVisibility(View.INVISIBLE);
-
         if(data == null)
             return;
 
-        movieArrayList = data;
-        if (data.size() > 0) {
+        if(movieArrayList != null)
+            movieArrayList.clear();
+
+        if(loader.getId() == CURSOR_LOADER) {
+            Cursor cursor = (Cursor) data;
+            cursor.moveToFirst();
+            while(!cursor.isAfterLast()) {
+                Movie newMoview = new Movie();
+                newMoview.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(FavMoviesContract.FavMoviesEntry.MOVIE_ID))));
+                newMoview.setVote_average(Double.valueOf(cursor.getString(cursor.getColumnIndex(FavMoviesContract.FavMoviesEntry.VOTE_AVERAGE))));
+                newMoview.setPoster_path(cursor.getString(cursor.getColumnIndex(FavMoviesContract.FavMoviesEntry.POSTER_PATH)));
+                newMoview.setOriginal_title(cursor.getString(cursor.getColumnIndex(FavMoviesContract.FavMoviesEntry.ORIGINAL_TITLE)));
+                newMoview.setRelease_date(cursor.getString(cursor.getColumnIndex(FavMoviesContract.FavMoviesEntry.RELEASE_DATE)));
+                newMoview.setOverview(cursor.getString(cursor.getColumnIndex(FavMoviesContract.FavMoviesEntry.OVERVIEW)));
+                movieArrayList.add(newMoview); //add the item
+                cursor.moveToNext();
+            }
+
+        } else {
+            movieArrayList = (List<Movie>)data;
+        }
+
+        if (movieArrayList.size() > 0) {
             showMovieListView();
             mAdapter.updateMovieDataSet(movieArrayList);
             mAdapter.notifyDataSetChanged();
         } else {
-            Snackbar.make(mRecyclerView, somethingWentWrongMessage, Snackbar.LENGTH_LONG).show();
+            errorMessageTextView.setText(R.string.msg_no_data_found);
             showErrorView();
         }
+
     }
+
 
 
 }

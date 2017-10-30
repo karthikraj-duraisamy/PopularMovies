@@ -32,6 +32,11 @@
         <activity android:name=".MoviewReviewsActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+
+        <provider
+            android:authorities="com.example.popularmovies.app"
+            android:name=".data.FavMoviesProvider"
+            android:exported="false" />
     </application>
 
 </manifest>
