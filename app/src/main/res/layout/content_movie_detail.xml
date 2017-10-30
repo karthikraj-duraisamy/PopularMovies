@@ -72,6 +72,16 @@
             android:padding="5dp"
             android:textColor="@color/colorWhite"
             android:text="Favorite this" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_below="@+id/tv_movie_description"
+            android:layout_marginEnd="16dp"
+            android:background="@color/colorPrimary"/>
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
