@@ -72,6 +72,9 @@ public class MovieListActivity extends AppCompatActivity implements MoviesGridAd
         int mNoOfColumns = calculateNoOfColumns(getApplicationContext());
         GridLayoutManager layoutManager = new GridLayoutManager(this, mNoOfColumns, GridLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
+
+        getSupportLoaderManager().initLoader(MOVIE_LOADER, null, this).forceLoad();
+
     }
 
     private int calculateNoOfColumns(Context context) {
@@ -85,7 +88,6 @@ public class MovieListActivity extends AppCompatActivity implements MoviesGridAd
     @Override
     protected void onResume() {
         super.onResume();
-        loadMovieData();
     }
 
 
@@ -113,7 +115,7 @@ public class MovieListActivity extends AppCompatActivity implements MoviesGridAd
             if(SORT_BY.equals("Favourites")) {
                 getSupportLoaderManager().initLoader(CURSOR_LOADER, null, this).forceLoad();
             } else {
-                getSupportLoaderManager().initLoader(MOVIE_LOADER, null, this).forceLoad();
+                getSupportLoaderManager().restartLoader(MOVIE_LOADER, null, this).forceLoad();
             }
         } else {
             showErrorView();
