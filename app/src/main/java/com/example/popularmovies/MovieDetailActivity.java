@@ -1,5 +1,6 @@
 package com.example.popularmovies;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,8 +10,10 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,6 +27,8 @@ import java.util.List;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.example.popularmovies.MoviewReviewsActivity.MOVIE_EXTRA_ID;
 
 public class MovieDetailActivity extends AppCompatActivity implements TrailerAdapter.TrailerClickListener, LoaderManager.LoaderCallbacks<List<MovieTrailers>>{
 
@@ -43,7 +48,8 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
     private List<MovieTrailers> movieTrailersList;
     private Context mContext;
     private TrailerAdapter trailerAdapter;
-    private Integer selectedMovieID;
+    private String selectedMovieID;
+    private RecyclerView.LayoutManager mLayoutManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +62,10 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("");
 
+        // use a linear layout manager
+        mLayoutManager = new LinearLayoutManager(this);
+        trailerRecyclerView.setLayoutManager(mLayoutManager);
+
         trailerAdapter = new TrailerAdapter(this, this);
         trailerRecyclerView.setHasFixedSize(true);
         trailerRecyclerView.setAdapter(trailerAdapter);
@@ -65,9 +75,8 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
         if(activityintent.hasExtra(MOVIE_DATA)) {
             Movie receivedMovie = activityintent.getParcelableExtra(MOVIE_DATA);
             updateUI(receivedMovie);
-            selectedMovieID = receivedMovie.getId();
-
-        }
+            selectedMovieID = String.valueOf(receivedMovie.getId());
+       }
     }
 
     @Override
@@ -97,6 +106,16 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
     @Override
     public void onTrailerClick(int itemPosition) {
 
+        MovieTrailers movieTrailers = movieTrailersList.get(itemPosition);
+
+        Intent youTubeAppIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + movieTrailers.getKey()));
+        try {
+            startActivity(youTubeAppIntent);
+        } catch (ActivityNotFoundException ex) {
+            Intent youTubeWebIntent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://www.youtube.com/watch?v=" + movieTrailers.getKey()));
+            startActivity(youTubeWebIntent);
+        }
     }
 
 
@@ -115,7 +134,7 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
     //AsyncLoader Callbacks
     @Override
     public Loader onCreateLoader(int id, Bundle args) {
-        return new VideosListLoader(MovieDetailActivity.this, new Long(selectedMovieID));
+        return new VideosListLoader(MovieDetailActivity.this, selectedMovieID);
     }
 
     @Override
@@ -134,10 +153,25 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
         if (data.size() > 0) {
             trailerAdapter.updateMovieDataSet(movieTrailersList);
             trailerAdapter.notifyDataSetChanged();
-        } else {
-            Snackbar.make(trailerRecyclerView, "Can't able to load trailers", Snackbar.LENGTH_LONG).show();
         }
     }
 
 
+    public void showReviewsOnClick(View v) {
+        Intent reviewsActivityIntent = new Intent(MovieDetailActivity.this, MoviewReviewsActivity.class);
+        reviewsActivityIntent.putExtra(MOVIE_EXTRA_ID, selectedMovieID);
+        startActivity(reviewsActivityIntent);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

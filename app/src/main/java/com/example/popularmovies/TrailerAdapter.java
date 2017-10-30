@@ -44,7 +44,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHold
 
     @Override
     public TrailerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.list_item_movie, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_trailer, parent, false);
         return new TrailerAdapter.ViewHolder(view);
     }
 
@@ -61,7 +61,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHold
         TextView trailerDescTextview;
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(itemView);
+            ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
         }
 

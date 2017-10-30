@@ -39,9 +39,9 @@ public class NetworkUtils {
         return url;
     }
 
-    public static URL buildVideoUrl(long id) {
+    public static URL buildVideoUrl(String id) {
         Uri builtUri = Uri.parse(MOVIE_DB_BASE_URL).buildUpon()
-                .appendPath(Long.toBinaryString(id))
+                .appendPath(id)
                 .appendPath("videos")
                 .appendQueryParameter(API_KEY_PARAM, API_KEY)
                 .build();
@@ -58,9 +58,9 @@ public class NetworkUtils {
         return url;
     }
 
-    public static URL buildReviewUrl(long id) {
+    public static URL buildReviewUrl(String id) {
         Uri builtUri = Uri.parse(MOVIE_DB_BASE_URL).buildUpon()
-                .appendPath(Long.toBinaryString(id))
+                .appendPath(id)
                 .appendPath("reviews")
                 .appendQueryParameter(API_KEY_PARAM, API_KEY)
                 .build();

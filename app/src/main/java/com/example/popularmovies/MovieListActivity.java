@@ -78,17 +78,9 @@ public class MovieListActivity extends AppCompatActivity implements MoviesGridAd
         loadMovieData();
     }
 
-    private boolean internetConnection() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting();
-        return isConnected;
-    }
 
     private void showMovieListView() {
-        if(internetConnection()) {
+        if(InternetUtils.isConnected(MovieListActivity.this)) {
             errorViewLayout.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
         } else {
@@ -102,7 +94,7 @@ public class MovieListActivity extends AppCompatActivity implements MoviesGridAd
     }
 
     private void loadMovieData() {
-        if(internetConnection()) {
+        if(InternetUtils.isConnected(MovieListActivity.this)) {
             if(movieArrayList == null)
                 movieArrayList = new ArrayList<>();
             else

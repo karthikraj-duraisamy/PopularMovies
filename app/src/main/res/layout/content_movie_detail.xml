@@ -16,8 +16,8 @@
             android:id="@+id/iv_moview_thumbnail"
             android:layout_width="185dp"
             android:layout_height="200dp"
-            android:paddingTop="16dp"
             android:contentDescription="@string/movie_poster_image"
+            android:paddingTop="16dp"
             tools:src="@mipmap/ic_launcher" />
 
         <TextView
@@ -70,27 +70,57 @@
             android:layout_marginRight="22dp"
             android:background="@color/colorPrimary"
             android:padding="5dp"
-            android:textColor="@color/colorWhite"
-            android:text="Favorite this" />
+            android:text="Favorite this"
+            android:textColor="@color/colorWhite" />
 
         <View
+            android:id="@+id/view"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="0.5dp"
+            android:layout_below="@+id/tv_movie_description"
+            android:layout_marginEnd="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginStart="16dp"
-            android:layout_below="@+id/tv_movie_description"
-            android:layout_marginEnd="16dp"
-            android:background="@color/colorPrimary"/>
+            android:background="@color/colorPrimary" />
+
         <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView_trailers"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="16dp"
-            android:id="@+id/recyclerView_trailers"
-            android:scrollbars="none"
-            android:layout_below="@+id/tv_movie_description"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/viewSeperatorTwo"
+            android:layout_marginTop="16dp"
+            android:scrollbars="none" />
+
+        <Button
+            android:id="@+id/btnReviews"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:padding="16dp"
+            android:background="@null"
+            android:layout_below="@+id/view"
+            android:onClick="showReviewsOnClick"
+            android:textColor="@color/colorPrimary"
+            android:text="VIEW REVIEWS" />
+
+        <View
+            android:id="@+id/viewSeperatorTwo"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_below="@+id/btnReviews"
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
+            android:background="@color/colorPrimary" />
+
+
     </RelativeLayout>
 
 </android.support.v4.widget.NestedScrollView>
