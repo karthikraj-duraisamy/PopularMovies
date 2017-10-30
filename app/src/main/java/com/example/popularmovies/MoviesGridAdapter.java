@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindString;
+import butterknife.ButterKnife;
 
 /**
  * Created by karthik on 2/7/17.
@@ -22,7 +23,7 @@ import butterknife.BindString;
 
 public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.MovieViewHolder>{
 
-    @BindString(R.string.poster_uri) String posterURIString;
+    String posterURIString = "http://image.tmdb.org/t/p/w185/";
 
     private MovieAdapterListener listener;
     private Context mContext;

@@ -57,6 +57,30 @@
             android:layout_below="@+id/iv_moview_thumbnail"
             android:layout_marginTop="16dp"
             android:padding="16dp"
-            tools:text="you still should and need to check for http timeout exceptions since there might be situations when a network is connected but there would no actual internet connection because the only way to access it is through, for instance, VPN - this way u have, for instance, WI-FI connection but no actual internet traffic. Another situation is a server hang-on. These are 2 issues that I've run recently and connection manager isn't gonna help there" />
+            tools:text="SOme otehr textklaldbkadfdvcjdj" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/tv_release_date"
+            android:layout_marginEnd="22dp"
+            android:layout_marginRight="22dp"
+            android:background="@color/colorPrimary"
+            android:padding="5dp"
+            android:textColor="@color/colorWhite"
+            android:text="Favorite this" />
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
+            android:id="@+id/recyclerView_trailers"
+            android:scrollbars="none"
+            android:layout_below="@+id/tv_movie_description"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
     </RelativeLayout>
+
 </android.support.v4.widget.NestedScrollView>

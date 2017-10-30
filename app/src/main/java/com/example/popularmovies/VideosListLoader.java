@@ -1,11 +1,7 @@
-package com.example.popularmovies.movieslist;
+package com.example.popularmovies;
 
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
-import android.util.Log;
-
-import com.example.popularmovies.Movie;
-import com.example.popularmovies.NetworkUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -15,29 +11,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A custom Loader that loads movies list from API endpoint.
+ * Created by karthik on 30/10/17.
  */
-public class MoviesListLoader extends AsyncTaskLoader<List<Movie>> {
 
-    private List<Movie> moviesList;
-    private String searchQuery = "";
+public class VideosListLoader extends AsyncTaskLoader<List<MovieTrailers>> {
 
-    public MoviesListLoader(Context context, String searchQueryParam) {
+    List<MovieTrailers> movieTrailersList;
+    private long movieId;
+
+    public VideosListLoader(Context context, long movieIdParam) {
         super(context);
-        searchQuery = searchQueryParam;
+        movieId = movieIdParam;
     }
 
     /**
      * To load all data from network in background thread
      */
-    @Override public List<Movie> loadInBackground() {
+    @Override public List<MovieTrailers> loadInBackground() {
         /* If there's no zip code, there's nothing to look up. */
-        if (searchQuery.length() == 0) {
-            return null;
-        }
-        moviesList = new ArrayList<>();
-        String sortBy = searchQuery;
-        URL requestUrl = NetworkUtils.buildUrl(sortBy);
+        movieTrailersList = new ArrayList<>();
+        long movieIdToLoad = movieId;
+        URL requestUrl = NetworkUtils.buildVideoUrl(movieIdToLoad);
 
         try {
             String jsonResponse = NetworkUtils
@@ -49,29 +43,25 @@ public class MoviesListLoader extends AsyncTaskLoader<List<Movie>> {
 
             for(int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject =  jsonArray.getJSONObject(i);
-                Integer id = jsonObject.getInt("id");
-                Double vote_average = jsonObject.getDouble("vote_average");
-                String posterPath = jsonObject.getString("poster_path");
-                String originalTitle = jsonObject.getString("original_title");
-                String releaseDate = jsonObject.getString("release_date");
-                String overview = jsonObject.getString("overview");
-                Movie movie = new Movie();
-                movie.setVote_average(vote_average);
-                movie.setPoster_path(posterPath);
-                movie.setRelease_date(releaseDate);
-                movie.setOriginal_title(originalTitle);
-                movie.setId(id);
-                movie.setOverview(overview);
-                Log.v("MOVIE_PARSE", movie.getVote_average() +" "+ movie.getPoster_path() +" "+ movie.getOriginal_title() +" "+ movie.getOverview());
-
-                moviesList.add(movie);
+                String trailerName = jsonObject.getString("name");
+                String trailerWebSite = jsonObject.getString("site");
+                Integer trailerSize = jsonObject.getInt("size");
+                String trailerType = jsonObject.getString("type");
+                String trailerVideoKey = jsonObject.getString("key");
+                MovieTrailers movieTrailers = new MovieTrailers();
+                movieTrailers.setKey(trailerVideoKey);
+                movieTrailers.setName(trailerName);
+                movieTrailers.setSite(trailerWebSite);
+                movieTrailers.setSize(trailerSize);
+                movieTrailers.setType(trailerType);
+                movieTrailersList.add(movieTrailers);
             }
 
-            return moviesList;
+            return movieTrailersList;
 
         } catch (Exception e) {
             e.printStackTrace();
-            return moviesList;
+            return movieTrailersList;
         }
     }
 
@@ -80,21 +70,21 @@ public class MoviesListLoader extends AsyncTaskLoader<List<Movie>> {
      * super class will take care of delivering it; the implementation
      * here just adds a little more logic.
      */
-    @Override public void deliverResult(List<Movie> movies) {
+    @Override public void deliverResult(List<MovieTrailers> movieTrailerses) {
         if (isReset()) {
             // An async query came in while the loader is stopped.  We
             // don't need the result.
-            if (movies != null) {
-                onReleaseResources(movies);
+            if (movieTrailerses != null) {
+                onReleaseResources(movieTrailerses);
             }
         }
-        List<Movie> loadedMovies = moviesList;
-        moviesList = movies;
+        List<MovieTrailers> loadedMovies = movieTrailersList;
+        movieTrailersList = movieTrailerses;
 
         if (isStarted()) {
             // If the Loader is currently started, we can immediately
             // deliver its results.
-            super.deliverResult(movies);
+            super.deliverResult(movieTrailerses);
         }
 
         // At this point we can release the resources associated with
@@ -109,10 +99,10 @@ public class MoviesListLoader extends AsyncTaskLoader<List<Movie>> {
      * Handles a request to start the Loader.
      */
     @Override protected void onStartLoading() {
-        if (moviesList != null) {
+        if (movieTrailersList != null) {
             // If we currently have a result available, deliver it
             // immediately.
-            deliverResult(moviesList);
+            deliverResult(movieTrailersList);
         }
 
     }
@@ -128,12 +118,12 @@ public class MoviesListLoader extends AsyncTaskLoader<List<Movie>> {
     /**
      * Handles a request to cancel a load.
      */
-    @Override public void onCanceled(List<Movie> movies) {
-        super.onCanceled(movies);
+    @Override public void onCanceled(List<MovieTrailers> movieTrailers) {
+        super.onCanceled(movieTrailers);
 
         // At this point we can release the resources associated with 'apps'
         // if needed.
-        onReleaseResources(movies);
+        onReleaseResources(movieTrailers);
     }
 
     /**
@@ -147,9 +137,9 @@ public class MoviesListLoader extends AsyncTaskLoader<List<Movie>> {
 
         // At this point we can release the resources associated with 'apps'
         // if needed.
-        if (moviesList != null) {
-            onReleaseResources(moviesList);
-            moviesList = null;
+        if (movieTrailersList != null) {
+            onReleaseResources(movieTrailersList);
+            movieTrailersList = null;
         }
 
     }
@@ -158,7 +148,7 @@ public class MoviesListLoader extends AsyncTaskLoader<List<Movie>> {
      * Helper function to take care of releasing resources associated
      * with an actively loaded data set.
      */
-    protected void onReleaseResources(List<Movie> movies) {
+    protected void onReleaseResources(List<MovieTrailers> movies) {
         // For a simple List<> there is nothing to do.  For something
         // like a Cursor, we would close it here.
     }

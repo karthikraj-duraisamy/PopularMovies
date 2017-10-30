@@ -2,15 +2,9 @@ package com.example.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.preference.PreferenceManager;
-import android.support.annotation.BoolRes;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -19,7 +13,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,17 +21,15 @@ import android.widget.ProgressBar;
 
 import com.example.popularmovies.movieslist.MoviesListLoader;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindString;
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MovieListActivity extends AppCompatActivity implements MoviesGridAdapter.MovieAdapterListener, LoaderManager.LoaderCallbacks<List<Movie>> {
 
@@ -57,6 +48,7 @@ public class MovieListActivity extends AppCompatActivity implements MoviesGridAd
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_list);
+        ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         movieArrayList = new ArrayList<>();
         mAdapter = new MoviesGridAdapter(this, this);
@@ -70,7 +62,6 @@ public class MovieListActivity extends AppCompatActivity implements MoviesGridAd
         int mNoOfColumns = calculateNoOfColumns(getApplicationContext());
         GridLayoutManager layoutManager = new GridLayoutManager(this, mNoOfColumns, GridLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
-        loadMovieData();
     }
 
     private int calculateNoOfColumns(Context context) {
@@ -81,6 +72,11 @@ public class MovieListActivity extends AppCompatActivity implements MoviesGridAd
         return noOfColumns;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadMovieData();
+    }
 
     private boolean internetConnection() {
         ConnectivityManager cm =
@@ -177,11 +173,14 @@ public class MovieListActivity extends AppCompatActivity implements MoviesGridAd
 
         movieArrayList = data;
         if (data.size() > 0) {
-            mAdapter.updateMovieDataSet(movieArrayList);
             showMovieListView();
+            mAdapter.updateMovieDataSet(movieArrayList);
+            mAdapter.notifyDataSetChanged();
         } else {
             Snackbar.make(mRecyclerView, somethingWentWrongMessage, Snackbar.LENGTH_LONG).show();
             showErrorView();
         }
     }
+
+
 }
